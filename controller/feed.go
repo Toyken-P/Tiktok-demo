@@ -35,6 +35,6 @@ func Feed(c *gin.Context) {
 	c.JSON(http.StatusOK, FeedResponse{
 		Response:  Response{StatusCode: 0},
 		VideoList: readvideos,
-		NextTime:  next_time.Unix(),
+		NextTime:  next_time,
 	})
 }

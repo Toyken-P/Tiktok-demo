@@ -1,21 +1,19 @@
 package controller
 
-import "time"
-
 type Response struct {
 	StatusCode int32  `json:"status_code"`
 	StatusMsg  string `json:"status_msg,omitempty"`
 }
 
 type Video struct {
-	Id            int64      `json:"id,omitempty"`
-	Author        User       `json:"author"`
-	PlayUrl       string     `json:"play_url" json:"play_url,omitempty"`
-	CoverUrl      string     `json:"cover_url,omitempty"`
-	FavoriteCount int64      `json:"favorite_count,omitempty"`
-	CommentCount  int64      `json:"comment_count,omitempty"`
-	IsFavorite    bool       `json:"is_favorite,omitempty"`
-	CreatedAt     *time.Time `json:"created_at,omitempty"`
+	Id            int64  `json:"id,omitempty"`
+	Author        User   `json:"author"`
+	PlayUrl       string `json:"play_url" json:"play_url,omitempty"`
+	CoverUrl      string `json:"cover_url,omitempty"`
+	FavoriteCount int64  `json:"favorite_count,omitempty"`
+	CommentCount  int64  `json:"comment_count,omitempty"`
+	IsFavorite    bool   `json:"is_favorite,omitempty"`
+	CreatedAt     int64  `json:"created_at,omitempty"`
 }
 
 type Comment struct {
@@ -28,6 +26,7 @@ type Comment struct {
 type User struct {
 	Id            int64  `json:"id,omitempty"`
 	Name          string `json:"name,omitempty"`
+	UserName      string `json:"user_name,omitempty"`
 	Password      string `json:"password,omitempty"`
 	FollowCount   int64  `json:"follow_count,omitempty"`
 	FollowerCount int64  `json:"follower_count,omitempty"`
