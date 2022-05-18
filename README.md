@@ -10,6 +10,13 @@
 go build && ./simple-demo
 ```
 
+docker 运行
+
+```bash
+docker build -t my-golang-app .
+docker run -it -rm -p 8080:8080 --name my-running-app my-golang-app
+```
+
 ### 功能说明
 
 接口功能不完善，仅作为示例
