@@ -22,6 +22,9 @@ func Feed(c *gin.Context) {
 	defer db.Close()
 	if err != nil {
 		fmt.Println("connect db failed : err:", err)
+		c.JSON(http.StatusOK, FeedResponse{
+			Response: Response{StatusCode: 1, StatusMsg: "网络出了一点小问题，请稍后再试哦"},
+		})
 		return
 	}
 	readvideos := make([]Video, 30)
