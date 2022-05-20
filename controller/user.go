@@ -60,9 +60,10 @@ func Register(c *gin.Context) {
 		})
 		return
 	}
-	var count int64
-	db.Table("users").Count(&count)
-	user.Id = count + 1
+	var count_user User
+	//db.Table("users").Count(&count)
+	db.Last(&count_user)
+	user.Id = count_user.Id + 1
 	db.Create(&user)
 	c.JSON(http.StatusOK, UserLoginResponse{
 		Response: Response{StatusCode: 0},
@@ -70,25 +71,6 @@ func Register(c *gin.Context) {
 		Token:    username + password,
 	})
 
-	//token := username + password
-
-	//if _, exist := usersLoginInfo[token]; exist {
-	//	c.JSON(http.StatusOK, UserLoginResponse{
-	//		Response: Response{StatusCode: 1, StatusMsg: "User already exist"},
-	//	})
-	//} else {
-	//	atomic.AddInt64(&userIdSequence, 1)
-	//	newUser := User{
-	//		Id:   userIdSequence,
-	//		Name: username,
-	//	}
-	//	usersLoginInfo[token] = newUser
-	//	c.JSON(http.StatusOK, UserLoginResponse{
-	//		Response: Response{StatusCode: 0},
-	//		UserId:   userIdSequence,
-	//		Token:    username + password,
-	//	})
-	//}
 }
 
 func Login(c *gin.Context) {
@@ -106,6 +88,7 @@ func Login(c *gin.Context) {
 	}
 	var select_user User
 	db.Where(user).Find(&select_user)
+	fmt.Println("select_user :", select_user)
 	if select_user.Id == 0 {
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 1, StatusMsg: "用户名或密码输入错误"},
