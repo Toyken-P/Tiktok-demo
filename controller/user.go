@@ -65,10 +65,12 @@ func Register(c *gin.Context) {
 	db.Last(&count_user)
 	user.Id = count_user.Id + 1
 	db.Create(&user)
+	token := username + password
+	db.Create(&Loginer{Token: token, UserId: user.Id})
 	c.JSON(http.StatusOK, UserLoginResponse{
 		Response: Response{StatusCode: 0},
 		UserId:   user.Id,
-		Token:    username + password,
+		Token:    token,
 	})
 
 }
@@ -113,28 +115,19 @@ func UserInfo(c *gin.Context) {
 		})
 		return
 	}
-	users := make([]User, 999)
-	db.Find(&users)
-	for _, user := range users {
-		if user.UserName+user.Password == token {
-			c.JSON(http.StatusOK, UserResponse{
-				Response: Response{StatusCode: 0},
-				User:     user,
-			})
-			return
-		}
+	var loginer Loginer = Loginer{Token: token}
+	db.Where(loginer).Find(&loginer)
+	if loginer.UserId != 0 {
+		var user User
+		db.Where("user_id = ?", loginer.UserId).Find(&user)
+		c.JSON(http.StatusOK, UserResponse{
+			Response: Response{StatusCode: 0},
+			User:     user,
+		})
+		return
 	}
 	c.JSON(http.StatusOK, UserResponse{
 		Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
 	})
-	//if user, exist := usersLoginInfo[token]; exist {
-	//	c.JSON(http.StatusOK, UserResponse{
-	//		Response: Response{StatusCode: 0},
-	//		User:     user,
-	//	})
-	//} else {
-	//	c.JSON(http.StatusOK, UserResponse{
-	//		Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
-	//	})
-	//}
+
 }

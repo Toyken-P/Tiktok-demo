@@ -34,6 +34,10 @@ type User struct {
 	FollowerCount int64  `json:"follower_count,omitempty"`
 	IsFollow      bool   `json:"is_follow,omitempty"`
 }
+type Loginer struct {
+	Token  string `json:"token,omitempty"`
+	UserId int64  `json:"userId,omitempty" gorm:"column:user_id"`
+}
 
 var (
 	playerprifex = "http://localhost:8080/static/"

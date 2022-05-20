@@ -27,23 +27,17 @@ func Publish(c *gin.Context) {
 		return
 	}
 	token := c.PostForm("token")
-	var users = make([]User, 999)
-	var select_user User
-	flag := false
-	db.Find(&users)
-	for _, user := range users {
-		if user.UserName+user.Password == token {
-			flag = true
-			select_user = user
-		}
-	}
-	if !flag {
+	var loginer Loginer = Loginer{Token: token}
+	db.Where(loginer).Find(&loginer)
+	if loginer.UserId == 0 {
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 1,
 			StatusMsg:  "please login first !",
 		})
 		return
 	}
+	var select_user User
+	db.Where("user_id = ?", loginer.UserId).Find(&select_user)
 	data, err := c.FormFile("data")
 	if err != nil {
 		fmt.Println("get file failed err:", err)
@@ -108,23 +102,19 @@ func PublishList(c *gin.Context) {
 		})
 		return
 	}
-	var users = make([]User, 999)
-	db.Find(&users)
-	var user_id int64
-	for _, user := range users {
-		if token == user.UserName+user.Password {
-			user_id = user.Id
-		}
-	}
-	if user_id == 0 {
+	var loginer Loginer = Loginer{Token: token}
+	db.Where(loginer).Find(&loginer)
+	if loginer.UserId == 0 {
 		c.JSON(http.StatusOK, VideoListResponse{
 			Response: Response{
-				StatusCode: 0,
+				StatusCode: 1,
+				StatusMsg:  "login error , please login again",
 			},
 		})
+		return
 	}
 	videolist := make([]Video, 999)
-	db.Where("user_id = ?", user_id).Find(&videolist)
+	db.Where("user_id = ?", loginer.UserId).Find(&videolist)
 	c.JSON(http.StatusOK, VideoListResponse{
 		Response: Response{
 			StatusCode: 0,
